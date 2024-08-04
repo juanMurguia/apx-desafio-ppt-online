@@ -5,7 +5,7 @@ import {initGanaste} from "./pages/resultado/ganaste"
 import {initPerdiste} from "./pages/resultado/perdiste"
 import { initPelea } from "./pages/pelea"
 
-const BASE_PATH = "/Desafio-PiedraPapelTijera/"
+const BASE_PATH = "/apx-desafio-ppt-nivel-2/"
 
 function isGithubPages(){
     console.log(location.host.includes("github.io"))
