@@ -5,7 +5,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build",
+    "build": "parcel build --dist-dir build --public-url /apx-desafio-ppt-nivel-2",
     "deploy":"gh-pages -d ./dist",
     "build-and-deploy":"npm run build && npm run deploy"
   },
