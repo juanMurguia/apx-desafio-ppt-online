@@ -1,8 +1,16 @@
 {
     "compilerOptions": {
-      "target": "esnext",
+      "module": "ESNext",
+      "target": "ESNext",
       "moduleResolution": "node",
+      "outDir": "./dist",
       "resolveJsonModule": true,
-      "allowSyntheticDefaultImports": true,
-    }
+      "allowJs": true,
+    },
+    "exclude": [
+    "node_modules",
+    "dist",
+    "src",
+    "build"   
+  ]
   }

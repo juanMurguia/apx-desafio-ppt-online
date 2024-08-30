@@ -5,8 +5,9 @@
   "source": "src/index.html",
   "scripts": {
     "dev": "parcel serve ./src/index.html ",
-    "server-start": "nodemon --watch ./server --ext ts --exec ts-node ./server/index.ts",
-    "server-build": "tsc ./server/index.ts ./server/index.js",
+    "server-dev": "nodemon --watch ./server --ext ts --exec ts-node ./server/index.ts",
+    "server-build": "tsc",
+    "server-start": "node ./dist/index.js",
     "deploy": "gh-pages -d ./build",
     "carpetas": "ls",
     "front-build": "parcel build ./src/index.html",
