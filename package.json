@@ -4,15 +4,42 @@
   "description": "",
   "source": "src/index.html",
   "scripts": {
-    "start": "parcel",
-    "build": "parcel build --dist-dir build --public-url /apx-desafio-ppt-nivel-2",
-    "deploy":"gh-pages -d ./dist",
-    "build-and-deploy":"npm run build && npm run deploy"
+    "dev": "parcel serve ./src/index.html ",
+    "server-start": "nodemon --watch ./server --ext ts --exec ts-node ./server/index.ts",
+    "server-build": "tsc ./server/index.ts ./server/index.js",
+    "deploy": "gh-pages -d ./build",
+    "carpetas": "ls",
+    "front-build": "parcel build ./src/index.html",
+    "build": "npm run front-build && npm run server-build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase": "^10.13.0",
+    "firebase-admin": "^12.4.0",
     "gh-pages": "^6.1.1",
-    "parcel": "^2.12.0"
+    "nodemon": "^3.1.4",
+    "parcel": "^2.12.0",
+    "ts-node": "^10.9.2",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "assert": "^2.1.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.3.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
+    "vm-browserify": "^1.1.2"
   }
 }

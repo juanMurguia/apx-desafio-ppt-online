@@ -1,3 +1,4 @@
+import { rtdb } from "../server/db";
 type Jugada = "piedra" | "papel" | "tijeras";
 
 type Game = {
@@ -7,6 +8,8 @@ type Game = {
 
 const state = {
     data: {
+        rtdbData:{},
+        roomId: "",
         currentGame:{
             computerPlay: "",
             myPlay: "",
@@ -18,6 +21,16 @@ const state = {
                 computerPoints : 0
         }]
     },
+    /*listenDataBase(){
+        //const rtdbRef = rtdb.ref(`game-room/${this.data.roomId}`);
+
+        rtdbRef.on("value", (snapshot) => {
+            const currentState = this.getState();
+            const value = snapshot.val();
+            currentState.rtdbData = value.currentGame;
+            this.saveData(currentState);
+          });
+    },*/
     listeners: [],
     getState(){
         return this.data

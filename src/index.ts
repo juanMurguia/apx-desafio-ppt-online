@@ -12,6 +12,7 @@ import {initInicio} from "./pages/inicio"
 import {initInstructions} from "./pages/instructions"
 import {initGanaste} from "./pages/resultado/ganaste"
 import { initPerdiste } from "./pages/resultado/perdiste"
+import { enterName } from "./pages/enterName"
 import { initRouter } from "./router"
 
 

@@ -8,15 +8,23 @@ export function initInicio(params){
             <h1>Piedra Papel o Tijeras</h1>
         </div>
         <div class="init-page__button">
-            <custom-button class="boton-inicio">Empezar</custom-button>
+            <custom-button class="botonNewGame">Nuevo juego</custom-button>
+        </div>
+        <div class="init-page__button">
+            <custom-button class="botonEnterRoom">Ingresar a una sala</custom-button>
         </div>
         <div class="init-page__hands">
             <hands-el></hands-el>
         </div>
     `
-    const button = div.querySelector(".boton-inicio")
+    const buttonNewGame = div.querySelector(".botonNewGame")
+    const buttonEnterRoom = div.querySelector(".botonEnterRoom")
 
-    button?.addEventListener("click",()=>{
+    buttonNewGame?.addEventListener("click",()=>{
+        params.goTo("/newGame")
+    })
+
+    buttonEnterRoom?.addEventListener("click",()=>{
         params.goTo("/instructions")
     })
 
