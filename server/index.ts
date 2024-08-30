@@ -1,9 +1,9 @@
-import * as express from "express"
-import { firestore, rtdb } from "./db"
+import express  from "express"
+import { firestore, rtdb } from "./db.js"
 import { v4 as uuidv4 } from 'uuid';
+import cors from "cors"
 
 const app = express();
-const cors = require('cors')
 const port = process.env.PORT || 3000;
 
 app.use(cors())

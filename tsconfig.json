@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-      "module": "ESNext",
-      "target": "ESNext",
-      "moduleResolution": "node",
-      "outDir": "./dist",
-      "resolveJsonModule": true,
-      "allowJs": true,
-    },
-    "exclude": [
-    "node_modules",
-    "dist",
-    "src",
-    "build"   
-  ]
-  }
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2023",
+    "outDir": "./dist",
+    "rootDir": "./server", 
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+  },
+  "include": ["./server/*"],
+  "exclude": ["node_modules"]
+}
