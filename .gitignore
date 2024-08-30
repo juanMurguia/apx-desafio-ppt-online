@@ -2,3 +2,5 @@ dist
 .parcel-cache/
 node_modules/
 build
+.env
+desafio-nivel2-final-firebase-adminsdk-4wvjk-ebc2f1f487.json
