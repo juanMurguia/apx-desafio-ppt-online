@@ -25,7 +25,7 @@ export function initInicio(params){
     })
 
     buttonEnterRoom?.addEventListener("click",()=>{
-        params.goTo("/instructions")
+        params.goTo("/enterRoom")
     })
 
     return div

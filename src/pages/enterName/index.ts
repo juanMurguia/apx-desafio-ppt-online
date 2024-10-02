@@ -1,8 +1,8 @@
-import {initRouter} from "../../router"
+import { state } from "../../state"
 
-export function enterName(params){
+export function enterName(params: any){
     const div = document.createElement("div")
-    div.className = "enterName-page"
+    div.className = "enterName-page container"
     div.innerHTML = `
         <div class="init-page__title">
             <h1>Piedra Papel o Tijeras</h1>
@@ -26,24 +26,21 @@ export function enterName(params){
         e.preventDefault();
         const inputElement = input as HTMLInputElement;
         const nombre = inputElement.value;
-        console.log("Nombre ingresado:", nombre); 
 
-        fetch('http://localhost:3000/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nombre })  // Enviar el nombre como un objeto JSON
+        state.setPlayer(nombre)
+        state.signIn((err)=>{
+            if(err) console.error('hubo error en el sign in')
+
+        state.askNewRoom(()=>{
+            state.accessToRoom(() => {
+                const cs = state.getState();
+                const roomId = cs.roomId;
+                console.log(cs)
+                params.goTo(`/waitingOpponent/${roomId}`)
+            })
+        } );   
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            // Aquí puedes manejar lo que pasa después de enviar los datos correctamente, como redirigir al usuario
-            //params.goTo("/");  // Navegar a la ruta indicada después del éxito
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+
     });
 
 

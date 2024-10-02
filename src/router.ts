@@ -1,88 +1,109 @@
-import {initJuego} from "./pages/juego"
-import {initInstructions} from "./pages/instructions"
-import {initInicio} from "./pages/inicio/index"
-import {initGanaste} from "./pages/resultado/ganaste"
-import {initPerdiste} from "./pages/resultado/perdiste"
-import { initPelea } from "./pages/pelea"
-import { enterName } from "./pages/enterName"
-
-const BASE_PATH = "/apx-desafio-ppt-nivel-2/"
-
-function isGithubPages(){
-    console.log(location.host.includes("github.io"))
-    return location.host.includes("github.io")
+import { initJuego } from "./pages/juego";
+import { initInstructions } from "./pages/instructions";
+import { initInicio } from "./pages/inicio/index";
+import { initGanaste } from "./pages/resultado/ganaste";
+import { initPerdiste } from "./pages/resultado/perdiste";
+import { initPelea } from "./pages/pelea";
+import { enterName } from "./pages/enterName";
+import { enterRoom } from "./pages/enterRoom";
+import { waitingOpponent } from "./pages/waitingOpponent";
+import { waitingReadyOpponent } from "./pages/waitingReadyOpponent";
+interface RouteComponentParams {
+  goTo: (path: string) => void;
+  roomId?: string;
 }
 
-const routes = [
+const BASE_PATH = "/apx-desafio-ppt-nivel-2/";
+
+export function initRouter(container: HTMLElement) {
+  function goTo(path: string) {
+    history.pushState({}, "", path);
+    handleRoute(path);
+  }
+
+  const routes = [
     {
-        path: /\/juego/,
-        component: initJuego
+      path: /\/juego/,
+      component: ({ goTo }: RouteComponentParams) => initJuego({ goTo }),
     },
     {
-        path: /\/instructions/,
-        component: initInstructions
+      path: /\/instructions/,
+      component: ({ goTo }: RouteComponentParams) => initInstructions({ goTo }),
     },
     {
-        path: /\/inicio/,
-        component: initInicio
+      path: /\/inicio/,
+      component: ({ goTo }: RouteComponentParams) => initInicio({ goTo }),
     },
     {
-        path: /\/newGame/,
-        component: enterName
+      path: /\/newGame/,
+      component: ({ goTo }: RouteComponentParams) => enterName({ goTo }),
     },
     {
-        path: /\/resultadoGanaste/,
-        component: initGanaste
+      path: /\/resultadoGanaste/,
+      component: ({ goTo }: RouteComponentParams) => initGanaste({ goTo }),
     },
     {
-        path: /\/resultadoPerdiste/,
-        component: initPerdiste
+      path: /\/resultadoPerdiste/,
+      component: ({ goTo }: RouteComponentParams) => initPerdiste({ goTo }),
     },
     {
-        path: /\/pelea/,
-        component: initPelea
+      path: /\/pelea/,
+      component: ({ goTo }: RouteComponentParams) => initPelea({ goTo }),
+    },
+    {
+      path: /\/enterRoom/,
+      component: ({ goTo }: RouteComponentParams) => enterRoom({ goTo }),
+    },
+    {
+      path: /\/waitingReadyOpponent/,
+      component: ({ goTo }: RouteComponentParams) =>
+        waitingReadyOpponent({ goTo }), // Se utiliza un handler en vez de async
+    },
+    {
+      path: /^\/waitingOpponent\/([a-zA-Z0-9_-]+)$/,
+      component: ({ goTo, roomId }: RouteComponentParams) =>
+        waitingOpponent({ goTo, roomId }), // Pasa roomId como parámetro al componente
+    },
+  ];
+
+  async function handleRoute(route: string) {
+    let normalizedRoute = route;
+
+    if (!normalizedRoute || normalizedRoute === "/") {
+      normalizedRoute = "/inicio";
     }
-]
+    const matchedRoute = routes.find((r) => r.path.test(normalizedRoute));
 
-export function initRouter(container: any) {
+    if (matchedRoute) {
+      try {
+        const roomIdMatch = normalizedRoute.match(
+          /^\/waitingOpponent\/([a-zA-Z0-9_-]+)$/
+        );
+        const roomId = roomIdMatch ? roomIdMatch[1] : undefined;
 
-    function goTo(path: string) {
-        history.pushState({}, "", path);
-        handleRoute(path);
-    }
+        const routeComponentParams = roomId ? { goTo, roomId } : { goTo };
 
-    function handleRoute(route: string) {
-        let normalizedRoute = route;
+        const el = await matchedRoute.component(routeComponentParams);
 
-        if (isGithubPages()) {
-            normalizedRoute = route.replace(BASE_PATH, "/");
+        if (container.firstChild) {
+          container.firstChild.remove();
         }
-
-        const matchedRoute = routes.find(r => r.path.test(normalizedRoute));
-
-        if (matchedRoute) {
-            const el = matchedRoute.component({ goTo });
-            if (container.firstChild) {
-                container.firstChild.remove();
-            }
-            container.appendChild(el);
-            console.log(`Navegando a la ruta: ${normalizedRoute}`);
+        if (el instanceof Node) {
+          container.appendChild(el);
         } else {
-            console.error("Ruta no encontrada:", normalizedRoute);
+          console.error("El componente retornado no es un nodo del DOM.");
         }
-
-        console.log("El handleRoute recibió una nueva ruta:", route);
-    }
-
-    // Redirigir si la URL actual es "/"
-    if (location.pathname === "/" || location.pathname === BASE_PATH) {
-        goTo("/inicio");  // Redirige a /inicio
+      } catch (error) {
+        console.error("Error al manejar la ruta:", error);
+      }
     } else {
-        handleRoute(location.pathname);  // Maneja la ruta actual
+      console.error("Ruta no encontrada:", normalizedRoute);
     }
+  }
 
-    // Maneja los eventos de popstate (para navegar hacia atrás y hacia adelante)
-    window.onpopstate = function () {
-        handleRoute(location.pathname);
-    };
+  handleRoute(location.pathname);
+
+  window.addEventListener("popstate", () => {
+    handleRoute(location.pathname);
+  });
 }
