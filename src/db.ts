@@ -1,14 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue } from "firebase/database";
 
-let API_BASE_URL: string;
-
-// @ts-ignore
-if (process.env.NODE_ENV == "production") {
-  API_BASE_URL = "";
-} else {
-  API_BASE_URL = "http://localhost:3005";
-}
+const API_BASE_URL = "https://api-ppt-online.onrender.com";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA-o1L6Oc_oB3ZGxsiWXMpYf-U9EEu-c14",
