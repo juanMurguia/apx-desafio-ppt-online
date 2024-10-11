@@ -7,7 +7,12 @@ import path from "path";
 const app = express();
 const port = process.env.PORT || 3005;
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://desafiopptonline.netlify.app",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.listen(port, () => {
