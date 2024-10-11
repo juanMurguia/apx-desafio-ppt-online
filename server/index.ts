@@ -7,21 +7,34 @@ import path from "path";
 const app = express();
 const port = process.env.PORT || 3005;
 
+const allowedOrigins = [
+  "https://desafiopptonline.netlify.app",
+  "http://localhost:1234",
+];
+
 const corsOptions = {
-  origin: "https://desafiopptonline.netlify.app",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
+
 app.use(express.json());
 
 app.listen(port, () => {
-  console.log(`app running at http://localhost:${port}`);
+  console.log("Server running on port:", port);
 });
 
 const usersCollection = fireStore.collection("users");
 const roomsCollection = fireStore.collection("rooms");
 
+app.options("*", cors(corsOptions)); // Maneja las solicitudes preflight
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
