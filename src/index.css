@@ -5,7 +5,6 @@
 }
 
 body {
-
+    background: white;
     font-family: "Odibee Sans";
-    background-image: url("./components/images/fondo.png");
 }
