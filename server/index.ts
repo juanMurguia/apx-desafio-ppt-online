@@ -8,21 +8,21 @@ import { fileURLToPath } from "url";
 const app = express();
 const port = process.env.PORT || 3005;
 
+// Definir orígenes permitidos para CORS
 const allowedOrigins = [
-  "https://desafiopptonline.netlify.app",
-  "apx-desafio-ppt-online-production.up.railway.app",
-  "http://localhost:1234",
+  "https://desafiopptonline.netlify.app", // Producción
+  "http://localhost:1234", // Local
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, true); // Permitir si está en los orígenes permitidos
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS")); // Bloquear si no está en la lista
     }
   },
-  optionsSuccessStatus: 200,
+  optionsSuccessStatus: 200, // Asegura un buen estatus para navegadores antiguos
 };
 
 // Configurar CORS
@@ -35,19 +35,27 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.resolve(__dirname, "./dist")));
+// Servir archivos estáticos desde la carpeta "dist"
+app.use(express.static(path.resolve(__dirname, "../dist")));
 
+// Ruta para manejar cualquier petición no capturada y devolver el index.html
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
 });
 
+// Iniciar el servidor
 app.listen(port, () => {
   console.log("Server running on port:", port);
 });
 
+// ---------------------------------------------
+// Rutas de la API
+// ---------------------------------------------
+
 const usersCollection = fireStore.collection("users");
 const roomsCollection = fireStore.collection("rooms");
 
+// Ruta para obtener el entorno (solo de ejemplo)
 app.get("/env", async (req, res) => {
   res.json({
     environment: process.env.NODE_ENV,
@@ -184,3 +192,6 @@ app.post("/room/:id/join", async (req, res) => {
   await roomRef.update({ guest: gameState });
   return res.json({ success: true });
 });
+
+const filePath = path.resolve(__dirname, "../dist", "index.html");
+console.log("Serving file from:", filePath);
