@@ -6,8 +6,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3005;
 
@@ -31,19 +29,22 @@ app.use(cors());
 
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log("Server running on port:", port);
-});
-
 const usersCollection = fireStore.collection("users");
 const roomsCollection = fireStore.collection("rooms");
 
 app.options("*", cors(corsOptions));
 
-app.use(express.static(path.join(__dirname, "../dist")));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.resolve(__dirname, "../dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
+  res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
+});
+
+app.listen(port, () => {
+  console.log("Server running on port:", port);
 });
 
 app.get("/env", async (req, res) => {
