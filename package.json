@@ -11,7 +11,7 @@
     "server-start": "node ./dist/index.js",
     "deploy": "gh-pages -d ./build",
     "carpetas": "ls",
-    "front-build": "parcel build ./src/index.html",
+    "front-build": "parcel build ./src/index.html --dist-dir ./dist",
     "build": "npm run front-build && npm run server-build"
   },
   "author": "",
