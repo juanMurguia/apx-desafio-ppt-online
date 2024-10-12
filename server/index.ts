@@ -8,21 +8,21 @@ import { fileURLToPath } from "url";
 const app = express();
 const port = process.env.PORT || 3005;
 
-// Definir orígenes permitidos para CORS
 const allowedOrigins = [
-  "https://desafiopptonline.netlify.app", // Producción
-  "http://localhost:1234", // Local
+  "https://desafiopptonline.netlify.app",
+  "apx-desafio-ppt-online-production.up.railway.app",
+  "http://localhost:1234",
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // Permitir si está en los orígenes permitidos
+      callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS")); // Bloquear si no está en la lista
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  optionsSuccessStatus: 200, // Asegura un buen estatus para navegadores antiguos
+  optionsSuccessStatus: 200,
 };
 
 // Configurar CORS
@@ -35,7 +35,7 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.resolve(__dirname, "../dist")));
+app.use(express.static(path.resolve(__dirname, "./dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
