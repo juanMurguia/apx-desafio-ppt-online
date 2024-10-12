@@ -38,9 +38,12 @@ app.listen(port, () => {
 const usersCollection = fireStore.collection("users");
 const roomsCollection = fireStore.collection("rooms");
 
-app.options("*", cors(corsOptions)); // Maneja las solicitudes preflight
+app.options("*", cors(corsOptions));
+
+app.use(express.static(path.join(__dirname, "../dist")));
+
 app.get("*", (req, res) => {
-  res.sendFile(join(__dirname, "../dist/index.html"));
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 app.get("/env", async (req, res) => {
