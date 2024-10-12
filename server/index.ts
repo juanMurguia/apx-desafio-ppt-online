@@ -3,7 +3,11 @@ import { fireStore, rtdb } from "./db.js";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3005;
 
