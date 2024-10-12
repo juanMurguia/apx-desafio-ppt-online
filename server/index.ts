@@ -3,7 +3,11 @@ import { fireStore, rtdb } from "./db.js";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3005;
 
@@ -36,7 +40,7 @@ const roomsCollection = fireStore.collection("rooms");
 
 app.options("*", cors(corsOptions)); // Maneja las solicitudes preflight
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
+  res.sendFile(join(__dirname, "../dist/index.html"));
 });
 
 app.get("/env", async (req, res) => {
