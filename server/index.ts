@@ -2,9 +2,8 @@ import express from "express";
 import { fireStore, rtdb } from "./db.js";
 import { v4 as uuidv4 } from "uuid";
 import cors from "cors";
-import path from "path";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import path from "path";
 
 const app = express();
 const port = process.env.PORT || 3005;
@@ -37,14 +36,10 @@ app.options("*", cors(corsOptions));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.resolve(__dirname, "../dist")));
+app.use(express.static(path.join(__dirname, "../dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
-});
-
-app.listen(port, () => {
-  console.log("Server running on port:", port);
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 app.get("/env", async (req, res) => {
@@ -194,4 +189,8 @@ app.post("/room/:id/join", async (req, res) => {
     });
     return res.json({ success: true });
   }
+});
+
+app.listen(port, () => {
+  console.log("Server running on port:", port);
 });
