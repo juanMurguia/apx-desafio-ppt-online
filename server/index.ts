@@ -17,6 +17,19 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.resolve(__dirname, "../dist")));
 
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin,X-Requested-Width, Content-Type,Accept,Authorization"
+  );
+  next();
+});
+
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
 });
