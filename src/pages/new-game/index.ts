@@ -7,7 +7,7 @@ export function initNewGamePage(containerEl: Element) {
   const style = document.createElement("style");
   style.setAttribute("class", "style");
   style.innerHTML = `
-  .container{
+  .container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,24 +15,18 @@ export function initNewGamePage(containerEl: Element) {
   .main-title {
     padding-left: 40px;
     color: #5A5A5A;
-  }  
-
-  .main-title {
-
     font-size: 3.2rem;
-    ;
-}
-
-.form{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   }
-  .bttn{
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bttn {
     background: gray;
     border: 1px solid #5A5A5A;
   }
-  .input{
+  .input {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 15px;
@@ -43,40 +37,47 @@ export function initNewGamePage(containerEl: Element) {
     color: gray;
     border: 0.2rem solid #5A5A5A;
     border-radius: 2rem;
-
   }
   `;
 
   div.innerHTML = `
-    <h1 class="main-title">Piedra ,<br> Papel o <br> Tijera</h1>
-    <form class="form" for="formulario">
-      <input type="text" class="input" id="formulario" placeholder="ingresa tu nombre">
-      <button class="bttn">
-      <custom-button class="new-game"></custom-button>
+    <h1 class="main-title">Piedra, Papel o Tijera</h1>
+    <form class="form" id="game-form">
+      <input type="text" class="input" id="name-input" placeholder="ingresa tu nombre">
+      <button type="submit" class="bttn">
+        <custom-button class="new-game"></custom-button>
       </button>
     </form>
   `;
 
   containerEl.appendChild(div);
-  const form = document.querySelector("form");
+  const form = document.querySelector("#game-form");
 
-  form.addEventListener("submit", async function action(e) {
+  form?.addEventListener("submit", async function action(e) {
     e.preventDefault();
-    const data: HTMLInputElement = document.querySelector(".input");
+    const nameInput = form.querySelector("#name-input") as HTMLInputElement;
 
-    if (data.value == "") {
+    if (nameInput.value.trim() === "") {
       return window.alert("Please enter your name");
     }
 
-    form.removeChild(form.querySelector(".bttn"));
+    form?.removeChild(form.querySelector(".bttn"));
     containerEl.appendChild(document.createElement("custom-button"));
 
-    state.setName(data.value.toString());
-    await state.signIn();
-    await state.askNewRoom();
-    containerEl.querySelector("custom-button").remove();
+    state.setName(nameInput.value.trim());
 
-    goTo("/waiting-for-opponent");
+    try {
+      await state.signIn();
+      await state.askNewRoom();
+      goTo("/waiting-for-opponent");
+    } catch (error) {
+      console.error("Error signing in:", error);
+      return window.alert("Error signing in. Please try again.");
+    } finally {
+      nameInput.value = ""; // Limpia el input después de que se envíe
+      containerEl.querySelector("custom-button").remove();
+    }
   });
+
   containerEl.appendChild(style);
 }

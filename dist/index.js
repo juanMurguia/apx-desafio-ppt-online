@@ -51,21 +51,28 @@ app.post("/history/save/:id", async (req, res) => {
         return res.status(404).json({ message: "room not found" });
     }
 });
-// Ruta de autenticación de usuarios
 app.post("/auth", async (req, res) => {
-    const data = req.body;
-    const { name, scoreboard } = data.gameState;
-    const chekingIfUserExists = await usersCollection
-        .where("name", "==", name)
-        .get();
-    if (!chekingIfUserExists.empty) {
-        chekingIfUserExists.forEach((doc) => {
-            return res.status(200).json({ usrId: doc.id });
-        });
+    try {
+        const data = req.body;
+        if (!data.gameState) {
+            return res.status(400).json({ error: "Invalid request data" });
+        }
+        const { name, scoreboard } = data.gameState;
+        const checkingIfUserExists = await usersCollection
+            .where("name", "==", name)
+            .get();
+        if (!checkingIfUserExists.empty) {
+            const userDoc = checkingIfUserExists.docs[0]; // Cambiado para obtener solo el primer documento
+            return res.status(200).json({ usrId: userDoc.id });
+        }
+        else {
+            const newUserIdRef = await usersCollection.add({ name, scoreboard });
+            return res.status(201).json({ success: true, usrId: newUserIdRef.id });
+        }
     }
-    else {
-        const newUserIdRef = await usersCollection.add({ name, scoreboard });
-        return res.json({ success: true, usrId: newUserIdRef.id });
+    catch (error) {
+        console.error("Error in /auth:", error); // Registra el error en la consola del servidor
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 // Ruta para crear una nueva sala

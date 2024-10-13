@@ -73,22 +73,30 @@ app.post("/history/save/:id", async (req, res) => {
   }
 });
 
-// Ruta de autenticación de usuarios
 app.post("/auth", async (req, res) => {
-  const data = req.body;
-  const { name, scoreboard } = data.gameState;
+  try {
+    const data = req.body;
 
-  const chekingIfUserExists = await usersCollection
-    .where("name", "==", name)
-    .get();
+    if (!data.gameState) {
+      return res.status(400).json({ error: "Invalid request data" });
+    }
 
-  if (!chekingIfUserExists.empty) {
-    chekingIfUserExists.forEach((doc) => {
-      return res.status(200).json({ usrId: doc.id });
-    });
-  } else {
-    const newUserIdRef = await usersCollection.add({ name, scoreboard });
-    return res.json({ success: true, usrId: newUserIdRef.id });
+    const { name, scoreboard } = data.gameState;
+
+    const checkingIfUserExists = await usersCollection
+      .where("name", "==", name)
+      .get();
+
+    if (!checkingIfUserExists.empty) {
+      const userDoc = checkingIfUserExists.docs[0]; // Cambiado para obtener solo el primer documento
+      return res.status(200).json({ usrId: userDoc.id });
+    } else {
+      const newUserIdRef = await usersCollection.add({ name, scoreboard });
+      return res.status(201).json({ success: true, usrId: newUserIdRef.id });
+    }
+  } catch (error) {
+    console.error("Error in /auth:", error); // Registra el error en la consola del servidor
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

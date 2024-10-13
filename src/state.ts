@@ -60,30 +60,41 @@ const state = {
 
   async setName(name: string) {
     const { gameState } = await this.getState();
-    gameState.name = name;
+    gameState.name = name; // Esto modifica el nombre en el estado actual
   },
 
-  // crea un usuario en fireStore
+  // crea un usuario en Firestore
   async signIn() {
-    const data = await this.getState();
-    await this.setSessionStatus(true);
+    try {
+      const data = await this.getState();
+      await this.setSessionStatus(true);
 
-    const rawUser = await fetch(`${API_BASE_URL}/auth`, {
-      method: "post",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+      const rawUser = await fetch(`${API_BASE_URL}/auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gameState: data.gameState, // Asegúrate de enviar solo el gameState
+        }),
+      });
 
-    const userId = await rawUser.json();
-    const usrId = await userId.usrId;
-    await this.setUserId(usrId);
+      if (!rawUser.ok) {
+        throw new Error(`HTTP error! status: ${rawUser.status}`); // Manejo de errores de la respuesta
+      }
+
+      const userId = await rawUser.json(); // Esto debe ser un JSON válido
+      const usrId = userId.usrId; // Obtén el 'usrId' de la respuesta
+      await this.setUserId(usrId); // Establece el 'usrId' en el estado
+    } catch (error) {
+      console.error("Error during signIn:", error); // Registra cualquier error
+      // Puedes mostrar un mensaje de error al usuario aquí
+    }
   },
 
   async setUserId(usrId: string) {
     const { gameState } = await this.getState();
-    gameState.usrId = usrId;
+    gameState.usrId = usrId; // Modifica el 'usrId' en el estado actual
   },
 
   //crea un room en la rtdb para el owner de la sala
