@@ -66,7 +66,10 @@ app.post("/auth", async (req, res) => {
             return res.status(200).json({ usrId: userDoc.id });
         }
         else {
-            const newUserIdRef = await usersCollection.add({ name, scoreboard });
+            const newUserIdRef = await usersCollection.add({
+                name,
+                scoreboard: scoreboard || {}, // Si no hay scoreboard, asigna un objeto vacío
+            });
             return res.status(201).json({ success: true, usrId: newUserIdRef.id });
         }
     }
@@ -97,23 +100,6 @@ app.post("/rooms", async (req, res) => {
         return res.status(401).json({ message: "unauthorized" });
     }
 });
-app.post("/test", async (req, res) => {
-    try {
-        const { name } = req.body;
-        // Verifica que se haya enviado un nombre
-        if (!name) {
-            return res.status(400).json({ error: "Name is required" });
-        }
-        // Agrega el nombre a la colección 'test'
-        const newDocRef = await fireStore.collection("test").add({ name });
-        // Responde con el ID del nuevo documento
-        return res.status(201).json({ success: true, docId: newDocRef.id });
-    }
-    catch (error) {
-        console.error("Error in /test:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-});
 // Ruta para acceder a una sala existente
 app.post("/room/:id", async (req, res) => {
     const { gameState } = req.body;
@@ -126,6 +112,9 @@ app.post("/room/:id", async (req, res) => {
         return res.status(404).json({ message: "Room not found" });
     }
     const realTimeDbId = roomSnapshot.data();
+    if (!realTimeDbId) {
+        return res.status(500).json({ message: "Error retrieving room data" });
+    }
     return res.json({ success: true, privateId: realTimeDbId.rtdbId });
 });
 // Ruta para jugar en una sala
